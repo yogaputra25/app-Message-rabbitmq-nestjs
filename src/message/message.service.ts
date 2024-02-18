@@ -74,13 +74,13 @@ export class MessageService {
   send(message) {
     for (let index = 0; index < 100000; index++) {
       this.amqpConnection.publish('exchange1', 'subscribe-route1', {
-        msg: message + index,
+        msg: 'ini punya subscribe-route1' + message + index,
       });
     }
 
     for (let index = 0; index < 100000; index++) {
       this.amqpConnection.publish('exchange1', 'cekk', {
-        msg: message + index,
+        msg: 'ini punya cekk' + message + index,
       });
     }
   }
@@ -89,5 +89,6 @@ export class MessageService {
     // Buat queue dan routing key dan bind ke exchange
     this.amqpConnection.channel.assertQueue('budi');
     this.amqpConnection.channel.bindQueue('budi', 'exchange1', 'cekk');
+    // this.amqpConnection.channel.deleteQueue('budi');
   }
 }
