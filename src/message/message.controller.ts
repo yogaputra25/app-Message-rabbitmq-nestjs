@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req } from '@nestjs/common';
 import { MessageService } from './message.service';
 
 @Controller('message')
@@ -14,5 +14,10 @@ export class MessageController {
   @Get('/call')
   public async call() {
     await this.messageService.cekdata();
+  }
+
+  @Get('/make')
+  public async make() {
+    await this.messageService.createUserRMQ();
   }
 }

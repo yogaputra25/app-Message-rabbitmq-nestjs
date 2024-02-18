@@ -1,8 +1,11 @@
 import {
   AmqpConnection,
   RabbitHandler,
+  RabbitMQChannels,
+  RabbitMQModule,
   RabbitRPC,
   RabbitSubscribe,
+  makeRabbitDecorator,
 } from '@golevelup/nestjs-rabbitmq';
 import { Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
@@ -11,7 +14,7 @@ import { ClientProxy } from '@nestjs/microservices';
 export class MessageService {
   constructor(private readonly amqpConnection: AmqpConnection) {}
 
-  @RabbitRPC({
+  @RabbitSubscribe({
     exchange: 'exchange1',
     routingKey: 'subscribe-route1',
     queue: 'subscribe-queue',
@@ -23,6 +26,21 @@ export class MessageService {
     },
   })
   public async onMessage(message: any) {
+    console.log(message);
+  }
+
+  @RabbitSubscribe({
+    exchange: 'exchange1',
+    routingKey: 'cekk',
+    queue: 'budi',
+    queueOptions: {
+      consumerOptions: {
+        // exclusive: true,
+        noAck: false,
+      },
+    },
+  })
+  public async Message(message: any) {
     console.log(message);
   }
   async cekdata() {
@@ -46,14 +64,30 @@ export class MessageService {
     // Kembalikan array hasil looping
     return results;
   }
+  //   send(message) {
+  //     for (let index = 0; index < 100000; index++) {
+  //       this.amqpConnection.publish('exchange1', 'subscribe-route1', {
+  //         msg: message + index,
+  //       });
+  //     }
+  //   }
   send(message) {
     for (let index = 0; index < 100000; index++) {
       this.amqpConnection.publish('exchange1', 'subscribe-route1', {
         msg: message + index,
       });
-      this.amqpConnection.publish('notifi', 'update', {
+    }
+
+    for (let index = 0; index < 100000; index++) {
+      this.amqpConnection.publish('exchange1', 'cekk', {
         msg: message + index,
       });
     }
+  }
+
+  async createUserRMQ() {
+    // Buat queue dan routing key dan bind ke exchange
+    this.amqpConnection.channel.assertQueue('budi');
+    this.amqpConnection.channel.bindQueue('budi', 'exchange1', 'cekk');
   }
 }
