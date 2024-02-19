@@ -1,13 +1,5 @@
-import {
-  AmqpConnection,
-  RabbitHandler,
-  RabbitMQChannels,
-  RabbitMQModule,
-  RabbitRPC,
-  RabbitSubscribe,
-  makeRabbitDecorator,
-} from '@golevelup/nestjs-rabbitmq';
-import { Injectable } from '@nestjs/common';
+import { AmqpConnection, RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
+import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
@@ -71,7 +63,7 @@ export class MessageService {
   //       });
   //     }
   //   }
-  send(message) {
+  send(message: string) {
     for (let index = 0; index < 100000; index++) {
       this.amqpConnection.publish('exchange1', 'subscribe-route1', {
         msg: 'ini punya subscribe-route1' + message + index,
